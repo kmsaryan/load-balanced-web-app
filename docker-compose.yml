@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  web1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web1
+    networks:
+      - my-network
+
+  web2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web2
+    networks:
+      - my-network
+
+  web3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: web3
+    networks:
+      - my-network
+
+  loadbalancer:
+    build:
+      context: ./loadbalancer
+      dockerfile: Dockerfile
+    container_name: loadbalancer
+    depends_on:
+      - web1
+      - web2
+      - web3
+    networks:
+      - my-network
+
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: proxy
+    depends_on:
+      - loadbalancer
+    ports:
+      - "80:80"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
