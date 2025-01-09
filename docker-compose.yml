@@ -36,6 +36,8 @@ services:
       - web3
     networks:
       - my-network
+    volumes:
+      - haproxy-config:/usr/local/etc/haproxy    
 
   proxy:
     build:
@@ -48,6 +50,27 @@ services:
       - "80:80"
     networks:
       - my-network
+
+
+  controller:
+    build:
+      context: ./controller
+      dockerfile: Dockerfile
+    container_name: controller
+    depends_on:
+      - loadbalancer
+      - web1
+      - web2
+      - web3
+    networks:
+      - my-network
+    volumes:
+      - haproxy-config:/usr/local/etc/haproxy
+    environment:
+      - HAPROXY_CFG_PATH=/usr/local/etc/haproxy/haproxy.cfg
+
+volumes:
+  haproxy-config:
 
 networks:
   my-network:

@@ -1,8 +1,8 @@
 FROM haproxy:2.6
 
-# Fix for permission issues with apt
 USER root
-RUN apt-get update --allow-releaseinfo-change && apt-get install -y curl
+
+# Install curl and Python for controller interaction
+RUN apt-get update --allow-releaseinfo-change && apt-get install -y curl python3 python3-pip
 
 COPY haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
-
